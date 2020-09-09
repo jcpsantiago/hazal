@@ -22,7 +22,7 @@
   (let [original-body (req :body)
         model (get-in req [:query-string :model])
         urls (map (fn [x] (make-urls model x)) 
-                  (flatten container-config))
+                  container-config)
         res (reduce 
               (fn [body url] ((http/post url body) :body)) 
               original-body urls)]
