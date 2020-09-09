@@ -8,6 +8,8 @@ Even though it's easy to test each container in isolation, it is harder to test 
 
 The usual disclaimers of beta-quality software apply.
 
+![hazal chaining docker containers together](pipeline.png)
+
 ## Usage
 
 `hazal` expects a configuration file with the following structure, where each struct is a container. Order is important:
