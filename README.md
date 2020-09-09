@@ -34,6 +34,8 @@ Then, to use `hazal` and test the pipeline:
 - [x] Chain an arbitrary number of containers
 - [x] Differentiate between single and multi-model containers
 - [x] Send request to load model, if necessary
+- [ ] Inform if the model does not exist
+- [ ] Manage docker containers on-demand
 
 ## See also
 - [MultiModel server in R](https://github.com/jcpsantiago/sagemaker-multimodel-R)
