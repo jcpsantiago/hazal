@@ -1,4 +1,6 @@
+(use ./db)
 (import http)
+(import sh)
 
 (defn make-urls [model conf]
   (let [t (conf :type) 
@@ -23,3 +25,21 @@
     {:status 200
      :body res
      :headers {"Content-Type" "application/json"}}))
+
+
+(defn container-ports [container-name]
+  (sh/$< docker ps --filter (string "name=" container-name) --format "{{.Ports}}"))
+
+(defn add-conn-details [container]
+  (let [container-name (container :container)
+        splits (->> (container-ports container-name) 
+                    (string/split ":") 
+                    (map |(string/split "-" $0))
+                    flatten)
+        host-ports (zipcoll [:host :port] splits)]
+    (merge container host-ports)))
+
+
+(defn set-container-info! [containers]
+  (let [merged (map |(add-conn-details $0) containers)]
+    (set container-config merged)))

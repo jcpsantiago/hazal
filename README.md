@@ -15,11 +15,9 @@ The usual disclaimers of beta-quality software apply.
 `hazal` expects a configuration file with the following structure, where each struct is a container. Order is important:
 ```clojure
 [{:type "single"
-  :container "sagemaker-pre"
-  :port 8888}
+  :container "sagemaker-pre"}
 {:type "multi"
- :container "sagemaker-inf"
- :port 9999}]
+ :container "sagemaker-inf"}]
 ```
 
 Such a file could live in the main repository of a project e.g. where models are trained locally. 
@@ -37,6 +35,7 @@ Then, to use `hazal` and test the pipeline:
 - [x] Differentiate between single and multi-model containers
 - [x] Send request to load model, if necessary
 - [x] Inform if the model does not exist
+- [x] Get host and port from `docker ps`
 - [ ] Manage docker containers on-demand
 
 ## See also

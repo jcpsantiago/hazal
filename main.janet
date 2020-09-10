@@ -1,6 +1,7 @@
 (use joy)
 (use ./routes/pages)
 (use ./src/db)
+(use ./src/utils)
 (import sh)
 
 
@@ -24,13 +25,17 @@
 
 
 (defn main [_filename & args]
-  (set 
-    container-config 
-    (merge container-config (-> (first args) slurp parse)))
-  (let [containers (map (fn [t] (t :container)) (flatten container-config))
-        running? (map docker-running? containers)]
-    (if (all true? running?)
-      (do
-        (print "All containers are ready! Starting server...")
-        (server app (env :port)))
-      (print "Not all containers are running!"))))
+  (if (empty? (first args))
+    (print "Please provide a configuration file")
+    (do
+      (let [containers (-> (first args) slurp parse)
+            container-names (map (fn [t] (t :container)) (flatten container-config))
+            running? (map docker-running? container-names)]
+        (if (all true? running?)
+          (do
+            (print "All containers are ready!")
+            (print "Getting host and port of each container...")
+            (set-container-info! containers)
+            (print "Starting server...")
+            (server app (env :port)))
+          (print "Not all containers are running!"))))))
