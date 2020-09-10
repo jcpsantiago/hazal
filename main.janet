@@ -15,6 +15,7 @@
             (not-found)))
             # (logger)))
 
+
 (defn docker-running? [container]
   (->> (sh/$< docker ps --filter (string "name=" container) --format "{{.Names}}")
        (string/replace "\n" "")
@@ -22,11 +23,10 @@
        (not)))
 
 
-(defn main [script & args]
+(defn main [_filename & args]
   (set 
     container-config 
     (merge container-config (-> (first args) slurp parse)))
-
   (let [containers (map (fn [t] (t :container)) (flatten container-config))
         running? (map docker-running? containers)]
     (if (all true? running?)
