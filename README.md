@@ -12,10 +12,12 @@ The usual disclaimers of beta-quality software apply.
 
 ## Usage
 
+You need to install `janet` on your machine first.
+
 `hazal` expects a configuration file with the following structure, where each struct is a container. Order is important:
 ```clojure
-[{:type "single"
-  :container "sagemaker-pre"}
+[{:type "single"               # type of container: single or multi-model
+  :container "sagemaker-pre"}  # name of the container (docker run --name ...)
 {:type "multi"
  :container "sagemaker-inf"}]
 ```
