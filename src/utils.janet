@@ -14,7 +14,7 @@
 
 
 (defn model-loaded? [loaded-models model]
-  (any? (map (fn [x] (= model x)) loaded-models)))
+  (any? (map |(= model $) loaded-models)))
 
 
 (defn chain-containers [original-body urls]
@@ -34,12 +34,12 @@
   (let [container-name (container :container)
         splits (->> (container-ports container-name) 
                     (string/split ":") 
-                    (map |(string/split "-" $0))
+                    (map |(string/split "-" $))
                     flatten)
         host-ports (zipcoll [:host :port] splits)]
     (merge container host-ports)))
 
 
 (defn set-container-info! [containers]
-  (let [merged (map |(add-conn-details $0) containers)]
+  (let [merged (map |(add-conn-details $) containers)]
     (set container-config merged)))

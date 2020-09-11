@@ -13,11 +13,11 @@
 (defn pages/pipeline [req]
   (let [original-body (req :body)
         model (get-in req [:query-string :model])
-        endpoints (map (fn [x] (make-urls model x)) 
+        endpoints (map |(make-urls model $) 
                        container-config)
-        urls (map (fn [x] (x :endpoint)) endpoints)
+        urls (map |($ :endpoint) endpoints)
         multi-endpoint-port (-> (filter 
-                                  (fn [x] (= (x :type) "multi")) 
+                                  |(= ($ :type) "multi") 
                                   endpoints)
                                 (first)
                                 (get :port)
