@@ -1,4 +1,4 @@
-(use ./db)
+(import ./db :as db)
 (import http)
 (import sh)
 
@@ -42,4 +42,4 @@
 
 (defn set-container-info! [containers]
   (let [merged (map |(add-conn-details $) containers)]
-    (set container-config merged)))
+    (set db/container-config merged)))

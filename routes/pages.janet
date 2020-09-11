@@ -1,7 +1,7 @@
 (use joy)
 (import http)
-(use ../src/db)
-(use ../src/utils)
+(import ../src/db :as db)
+(import ../src/utils :as utils)
 
 (route :get "/ping" :pages/ping)
 (defn pages/ping [req]
@@ -13,8 +13,8 @@
 (defn pages/pipeline [req]
   (let [original-body (req :body)
         model (get-in req [:query-string :model])
-        endpoints (map |(make-urls model $) 
-                       container-config)
+        endpoints (map |(utils/make-urls model $) 
+                       db/container-config)
         urls (map |($ :endpoint) endpoints)
         multi-endpoint-port (-> (filter 
                                   |(= ($ :type) "multi") 
@@ -25,7 +25,7 @@
     
     # multi model containers do not load pre-load models
     (if (and 
-          (not (model-loaded? loaded-models model)) 
+          (not (utils/model-loaded? db/loaded-models model)) 
           (not (empty? multi-endpoint-port)))
       (do
         (print "Loading model " model)
@@ -42,8 +42,8 @@
                :headers {"Content-Type" "text/plain"}})
             (do
               (print "Adding " model " to list of loaded models")
-              (set loaded-models
-                   (array/concat loaded-models model))
-              (chain-containers original-body urls)))))
+              (set db/loaded-models
+                   (array/concat db/loaded-models model))
+              (utils/chain-containers original-body urls)))))
 
-      (chain-containers original-body urls)))) 
+      (utils/chain-containers original-body urls)))) 

@@ -1,7 +1,7 @@
 (use joy)
 (use ./routes/pages)
-(use ./src/db)
-(use ./src/utils)
+(import ./src/db :as db)
+(import ./src/utils :as utils)
 (import sh)
 
 
@@ -29,13 +29,13 @@
     (print "Please provide a configuration file")
     (do
       (let [containers (-> (first args) slurp parse)
-            container-names (->> container-config flatten (map |($ :container)))
+            container-names (->> db/container-config flatten (map |($ :container)))
             running? (map docker-running? container-names)]
         (if (all true? running?)
           (do
             (print "All containers are ready!")
             (print "Getting host and port of each container...")
-            (set-container-info! containers)
+            (utils/set-container-info! containers)
             (print "Starting server...")
             (server app (or (env :port) 9001)))
           (print "Not all containers are running!"))))))
