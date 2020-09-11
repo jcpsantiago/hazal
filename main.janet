@@ -29,7 +29,7 @@
     (print "Please provide a configuration file")
     (do
       (let [containers (-> (first args) slurp parse)
-            container-names (map |($ :container) (flatten container-config))
+            container-names (->> container-config flatten (map |($ :container)))
             running? (map docker-running? container-names)]
         (if (all true? running?)
           (do
