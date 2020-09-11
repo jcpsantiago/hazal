@@ -37,5 +37,5 @@
             (print "Getting host and port of each container...")
             (set-container-info! containers)
             (print "Starting server...")
-            (server app (env :port)))
+            (server app (or (env :port) 9001)))
           (print "Not all containers are running!"))))))
