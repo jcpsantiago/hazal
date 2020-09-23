@@ -5,23 +5,13 @@
 (import sh)
 
 
-(def app (-> (handlers pages/pipeline pages/ping)
-            (extra-methods)
-            (query-string)
-            (body-parser)
-            # (json-body-parser)
-            # (server-error)
-            # (x-headers)
-            # (static-files)
-            (not-found)))
-            # (logger)))
-
-
-(defn docker-running? [container]
-  (->> (sh/$< docker ps --filter (string "name=" container) --format "{{.Names}}")
-       (string/replace "\n" "")
-       (empty?)
-       (not)))
+(def app (-> (handlers pages/pipeline)
+             (query-string)
+             (body-parser)))
+             # (server-error)
+             # (x-headers)
+             # (not-found)))
+             # (logger)))
 
 
 (defn main [_filename & args]
@@ -29,8 +19,8 @@
     (print "Please provide a configuration file")
     (do
       (let [containers (-> (first args) slurp parse)
-            container-names (->> db/container-config flatten (map |($ :container)))
-            running? (map docker-running? container-names)]
+            container-names (->> containers flatten (map |($ :container)))
+            running? (map utils/docker-running? container-names)]
         (if (all true? running?)
           (do
             (print "All containers are ready!")

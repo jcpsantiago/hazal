@@ -1,1 +1,0 @@
-["sagemaker-pre" "sagemaker-inf"]
