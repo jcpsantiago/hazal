@@ -27,8 +27,16 @@
      :headers {"Content-Type" "application/json"}}))
 
 
+(defn docker-running? [container]
+  (->> (sh/$< docker ps --filter (string "name=" container) --format "{{.Names}}")
+       (string/replace "\n" "")
+       empty?
+       not))
+
+
 (defn container-ports [container-name]
   (sh/$< docker ps --filter (string "name=" container-name) --format "{{.Ports}}"))
+
 
 (defn add-conn-details [container]
   (let [container-name (container :container)
