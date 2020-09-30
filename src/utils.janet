@@ -1,6 +1,7 @@
 (import ./db :as db)
 (import http)
 (import sh)
+(import json :as json)
 
 (defn make-urls [model conf]
   (let [t (conf :type) 
@@ -17,13 +18,26 @@
   (any? (map |(= model $) loaded-models)))
 
 
-(defn chain-containers [original-body urls]
+(defn post-to-container! [tab url]
+  (let [body (-> (tab :latest-res))
+        res (-> ((http/post url body) :body))]
+    (put tab :latest-res res)
+    (array/push (tab :responses) res)
+    tab))
+ 
+
+(defn chain-containers [original-body urls container-names]
   (print "Chaining requests...")
-  (let [res (reduce 
-             (fn [body url] ((http/post url body) :body)) 
-             original-body urls)]
+  (let [res (reduce
+              post-to-container!
+              @{:responses @[] 
+                :latest-res original-body} 
+              urls)
+        enc (->> (res :responses) 
+                 (map json/decode)
+                 (zipcoll container-names))]
     {:status 200
-     :body res
+     :body (json/encode enc)
      :headers {"Content-Type" "application/json"}}))
 
 

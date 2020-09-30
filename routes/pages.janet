@@ -12,7 +12,10 @@
 
 (route :post "/pipeline" :pages/pipeline)
 (defn pages/pipeline [req]
-  (let [original-body (req :body)
+  (let [container-names (->> db/container-config
+                             (map |($ :container))
+                             (map keyword))
+        original-body (req :body)
         model (get-in req [:query-string :model])
         endpoints (map |(utils/make-urls model $) 
                        db/container-config)
@@ -37,14 +40,14 @@
           # specifies a 404 response for the GET /models/<model name> endpoint
           (if (= (res-loaded :status) 507)
             (do
-              (print "Model not found!")
+              (print (string "Model " model " not found!"))
               {:status 404
-               :body "Model not found!"
+               :body (string "Model " model " not found!")
                :headers {"Content-Type" "text/plain"}})
             (do
               (print "Adding " model " to list of loaded models")
               (set db/loaded-models
                    (array/concat db/loaded-models model))
-              (utils/chain-containers original-body urls)))))
+              (utils/chain-containers original-body urls container-names)))))
 
-      (utils/chain-containers original-body urls)))) 
+      (utils/chain-containers original-body urls container-names)))) 
