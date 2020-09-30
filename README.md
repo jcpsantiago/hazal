@@ -38,7 +38,7 @@ Then, to use `hazal` and test the pipeline:
 - [x] Send request to load model, if necessary
 - [x] Inform if the model does not exist
 - [x] Get host and port from `docker ps`
-- [ ] If a container fails, pass the response and inform which step failed
+- [x] If a container fails, pass the response and inform which step failed
 - [ ] Manage docker containers on-demand
 
 ## See also
