@@ -19,8 +19,8 @@
 
 
 (defn post-to-container! [tab url]
-  (let [body (-> (tab :latest-res))
-        res (-> ((http/post url body) :body))]
+  (let [body (tab :latest-res)
+        res ((http/post url body) :body)]
     (put tab :latest-res res)
     (array/push (tab :responses) res)
     tab))
