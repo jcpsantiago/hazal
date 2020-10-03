@@ -39,7 +39,6 @@ Then, to use `hazal` and test the pipeline:
 - [x] Inform if the model does not exist
 - [x] Get host and port from `docker ps`
 - [x] If a container fails, pass the response and inform which step failed
-- [ ] Manage docker containers on-demand
 
 ## See also
 - [MultiModel server in R](https://github.com/jcpsantiago/sagemaker-multimodel-R)
